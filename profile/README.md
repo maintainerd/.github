@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="200" height="200" alt="logo" src="https://github.com/user-attachments/assets/3545c8ef-fe74-42c4-890e-0becf4f5ae2f" />
+  <img width="150" height="150" alt="logo" src="https://github.com/user-attachments/assets/3545c8ef-fe74-42c4-890e-0becf4f5ae2f" />
 </p>
 
 <h1 align="center">maintainerd</h1>
@@ -20,85 +20,108 @@ Each module can be:
 * Configured as a **standalone** service or integrated with other modules
 * Customized through environment variables or config files
 
-**Current public services include:**
+---
 
-* [`auth`](https://github.com/maintainerd/auth): User authentication, OAuth2, OIDC, and external identity support
-* [`core`](https://github.com/maintainerd/core): Main orchestration and REST+gRPC entrypoint
-* [`contract`](https://github.com/maintainerd/contract): Shared gRPC/protobuf definitions for all services
+### 🧱 Architecture Modes
+
+`maintainerd` supports two high-level application modes:
+
+#### 🧩 `APP_MODE = micro`
+
+* Each service runs as an **independent microservice**.
+* Services communicate via **gRPC** and **RabbitMQ/Kafka**.
+* Each service can use:
+
+  * Its **own database** (`DB_MODE = standalone`), or
+  * A **shared database** (`DB_MODE = shared`) using **table prefixes** to avoid naming conflicts.
+* Suitable for scalable, modular deployments.
+
+#### 🧱 `APP_MODE = mono`
+
+* Deploy multiple services **together in a single container/app**.
+* Services **share a single database**, eliminating data duplication (e.g., shared `users`, `organization`, etc.).
+* Allows cross-service queries and tight integration.
+* Useful for hybrid monolith-microservice deployments — perfect for medium-scale orgs or those migrating gradually.
+
+#### 🛡️ Table Prefixing
+
+To support shared databases without table collisions:
+
+* All services support a configurable **table prefix**.
+* This is useful when:
+
+  * Deploying multiple services into the same schema
+  * Avoiding name conflicts with existing organizational tables
+  * Running in `DB_MODE = shared` (only supported in `micro` mode)
 
 ---
 
-### 🧩 Microservice Architecture
+### 🧩 Current Modules
 
-All `maintainerd` services are built with **inter-service communication and messaging in mind**:
+#### ✅ [`auth`](https://github.com/maintainerd/auth)
 
-* 🛰 **gRPC** for internal service-to-service communication
-* 📬 **RabbitMQ** or **Kafka** for async event-driven communication
-* ⚙️ Each service runs as an isolated Docker container, but supports service discovery and orchestration
-* 🔗 Common `.proto` contracts are shared via the [`contract`](https://github.com/maintainerd/contract) submodule
+Authentication & Authorization Service
+A fully featured authentication system with support for:
 
----
+* **OIDC**, **OAuth2**, and custom flows
+* **External Identity Providers**: Connect to Cognito, Auth0, etc.
+* **Internal User System**: Use `maintainerd-auth`'s built-in database
+* **JWT-based access control**, roles, and metadata
 
-### 🔐 Current Module: `auth`
+> Can serve as your **primary auth system** or integrate with external providers.
 
-A flexible and powerful authentication system supporting:
+#### 🧠 [`core`](https://github.com/maintainerd/core)
 
-* ✅ **OIDC** and **OAuth2** protocols
-* ✅ **Built-in user management system**
-* ✅ **External identity provider integration** (Cognito, Auth0, etc.)
-* ✅ **JWT** support with scopes, roles, and metadata
-* ✅ REST + gRPC APIs
+Acts as the central orchestrator and API gateway for all modules:
 
-Use it as:
-
-* A **primary auth system** for your org
-* A **bridge to existing identity providers**
+* Exposes unified REST + gRPC APIs
+* Handles coordination across services like `auth`
+* Can be deployed in `mono` or `micro` mode
 
 ---
 
-### 🧠 `core` Service
+### 🧰 Microservice Communication
 
-The gateway and orchestrator for your services:
-
-* Exposes **REST APIs** for client interaction
-* Connects to internal modules via **gRPC**
-* Integrates with the `auth` module out-of-the-box
-* Supports future modules like billing, inventory, and more
+* ✅ **gRPC** for direct inter-service requests
+* ✅ **RabbitMQ** and **Kafka** for event-driven architecture
+* ✅ Optional shared protobuf contracts via [`contract`](https://github.com/maintainerd/contract)
+* ✅ Compatible with container orchestration (Docker, Kubernetes)
 
 ---
 
 ### 📦 Upcoming Modules
 
-We’re actively expanding the maintained module catalog:
+We’re actively expanding the ecosystem with more reusable backend components:
 
-* `billing` – Manage subscriptions, usage, invoicing
-* `inventory` – Track assets, stock levels, warehouse activity
-* `task-manager` – Projects, task flow, and collaboration tools
-* `windows-mgmt` – Tools for managing Windows hosts (RDP, script automation, etc.)
+* `billing` – Manage payments, subscriptions, invoices
+* `inventory` – Products, stocks, warehousing
+* `task-manager` – Projects, issues, tasks
+* `windows-mgmt` – Windows endpoint scripting and automation
+* ...more coming soon!
 
-Each module will:
+All future modules:
 
-* Be containerized and production-ready
-* Integrate seamlessly with existing `maintainerd` services
-* Follow a consistent API and config design
-
----
-
-### 🧰 Features at a Glance
-
-* ✅ Built in **Go** for performance, concurrency, and reliability
-* ✅ Fully containerized with **Docker**
-* ✅ Plug-and-play architecture with minimal configuration
-* ✅ **REST + gRPC APIs** for modern integration
-* ✅ Native support for **RabbitMQ** and **Kafka**
-* ✅ Secure defaults (TLS, OAuth2, JWT)
-* ✅ Production-ready with metrics, health checks, and structured logging
+* Will be deployable as standalone microservices
+* Will support both `mono` and `micro` modes
+* Will follow consistent APIs and architecture
 
 ---
 
-### 🚀 Getting Started
+### ✅ Features
 
-**1. Clone any module (e.g. auth):**
+* ⚡ Written in **Go** for performance
+* 🐳 Distributed via Docker images
+* 🔗 REST + gRPC APIs
+* 🎯 Pluggable into existing systems
+* 🔐 Secure by default (JWT, OAuth2)
+* 🧠 Designed for reusability, modularity, and extensibility
+* 🛠 Supports `APP_MODE` and `DB_MODE` for flexible deployments
+
+---
+
+### 🚀 Quick Start
+
+**1. Clone a service (e.g., `auth`):**
 
 ```bash
 git clone https://github.com/maintainerd/auth.git
@@ -107,57 +130,51 @@ make build
 docker run -p 8080:8080 maintainerd-auth
 ```
 
-**2. Integrate with `core`**
+**2. Choose your mode (via env):**
 
-```bash
-git clone https://github.com/maintainerd/core.git
+```env
+APP_MODE=micro       # or mono
+DB_MODE=standalone   # or shared (micro only)
+TABLE_PREFIX=auth_
 ```
-
-Each service comes with its own documentation and Makefile.
 
 ---
 
 ### 📚 Documentation
 
-> Full docs for setup, deployment, APIs, and architecture coming soon at [maintainerd.dev](https://maintainerd.dev) *(under development)*
+> Full setup guides and architecture docs are coming soon on [maintainerd.dev](https://maintainerd.dev)
 
-In the meantime, see:
+Until then:
 
-* [Wiki](https://github.com/maintainerd/auth/wiki) for auth setup
-* [contract](https://github.com/maintainerd/contract) for protobuf definitions
+* [`auth` Wiki](https://github.com/maintainerd/auth/wiki)
+* [`contract`](https://github.com/maintainerd/contract) for shared protobufs
 
 ---
 
 ### 🤝 Contributing
 
-Want to contribute a module or help improve existing ones?
+Want to contribute a new service or help improve existing ones?
 
-1. Fork a service repo
+1. Fork a module repo
 2. Create a feature branch
-3. Open a pull request
+3. Submit a PR
 
-We welcome external contributions, especially for:
+We welcome:
 
-* Bug fixes
-* Feature ideas
-* New maintained modules
+* New modules (e.g., HR, CRM, support, chat)
+* Bug fixes & security patches
+* Performance improvements
 
 ---
 
 ### 📜 License
 
-MIT License — freely usable for commercial and personal projects.
+MIT License — use freely for commercial and personal projects.
 
 ---
 
 ### 🌍 Stay Updated
 
-Watch the [maintainerd organization](https://github.com/maintainerd) to follow all service releases and new module announcements.
-
----
-
-Let me know if you'd like:
-
-* A matching `README.md` generated
-* Badges for Docker Hub, Go Report Card, CI status
-* A landing page layout for your [maintainerd.dev](https://maintainerd.dev) in case you want to make it public soon
+* Watch the [GitHub org](https://github.com/maintainerd)
+* Star and follow modules you use
+* Open issues or discussions to request new modules
