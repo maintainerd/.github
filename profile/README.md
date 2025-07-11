@@ -2,7 +2,7 @@
   <img width="150" height="150" alt="logo" src="https://github.com/user-attachments/assets/3545c8ef-fe74-42c4-890e-0becf4f5ae2f" />
 </p>
 
-<h1 align="center">maintainerd</h1>
+<h1 align="center">Maintainerd</h1>
 
 **maintainerd** is a collection of production-ready, containerized backend services written in Go — designed to be deployed instantly as standalone applications or as part of a high-performance microservices system.
 
@@ -28,31 +28,32 @@ Each module can be:
 
 #### 🧩 `APP_MODE = micro`
 
-* Each service runs as an **independent microservice**.
-* Services communicate via **gRPC** and **RabbitMQ/Kafka**.
+* Each service runs as an **independent microservice**
+* Services communicate via **gRPC** and **RabbitMQ/Kafka**
 * Each service can use:
 
-  * Its **own database** (`DB_MODE = standalone`), or
-  * A **shared database** (`DB_MODE = shared`) using **table prefixes** to avoid naming conflicts.
-* Suitable for scalable, modular deployments.
+  * Its **own database** (`DB_MODE = standalone`)
+  * A **shared database** (`DB_MODE = shared`) using **table prefixes** to avoid naming conflicts
+* Ideal for distributed, decoupled deployments
 
 #### 🧱 `APP_MODE = mono`
 
-* Deploy multiple services **together in a single container/app**.
-* Services **share a single database**, eliminating data duplication (e.g., shared `users`, `organization`, etc.).
-* Allows cross-service queries and tight integration.
-* Useful for hybrid monolith-microservice deployments — perfect for medium-scale orgs or those migrating gradually.
+* Deploy multiple services **together in a single container/app**
+* Services **share a single database**, reducing duplicated data like `users`, `organizations`, etc.
+* Enables tight integration and direct table access between services
+* Best for hybrid or gradual microservice adoption
 
-#### 🛡️ Table Prefixing
+#### 🛡️ Table Prefixing with `DB_TABLE_PREFIX`
 
-To support shared databases without table collisions:
+To support shared databases without table conflicts:
 
-* All services support a configurable **table prefix**.
-* This is useful when:
+* Services support a configurable **`DB_TABLE_PREFIX`** variable
+* Tables will be named like `auth_users`, `billing_invoices`, etc.
+* Prevents name clashes when:
 
-  * Deploying multiple services into the same schema
-  * Avoiding name conflicts with existing organizational tables
-  * Running in `DB_MODE = shared` (only supported in `micro` mode)
+  * Using `DB_MODE = shared`
+  * Deploying into a pre-existing database
+  * Connecting multiple services to the same schema
 
 ---
 
@@ -82,10 +83,10 @@ Acts as the central orchestrator and API gateway for all modules:
 
 ### 🧰 Microservice Communication
 
-* ✅ **gRPC** for direct inter-service requests
-* ✅ **RabbitMQ** and **Kafka** for event-driven architecture
-* ✅ Optional shared protobuf contracts via [`contract`](https://github.com/maintainerd/contract)
-* ✅ Compatible with container orchestration (Docker, Kubernetes)
+* ✅ **gRPC** for direct inter-service calls
+* ✅ **RabbitMQ** and **Kafka** for event-driven messaging
+* ✅ Shared protobuf contracts via [`contract`](https://github.com/maintainerd/contract)
+* ✅ Container-ready for Docker/Kubernetes
 
 ---
 
@@ -94,28 +95,27 @@ Acts as the central orchestrator and API gateway for all modules:
 We’re actively expanding the ecosystem with more reusable backend components:
 
 * `billing` – Manage payments, subscriptions, invoices
-* `inventory` – Products, stocks, warehousing
+* `inventory` – Products, stock, warehouse tracking
 * `task-manager` – Projects, issues, tasks
 * `windows-mgmt` – Windows endpoint scripting and automation
 * ...more coming soon!
 
-All future modules:
+All future modules will:
 
-* Will be deployable as standalone microservices
-* Will support both `mono` and `micro` modes
-* Will follow consistent APIs and architecture
+* Be independently deployable
+* Support `mono` and `micro` modes
+* Follow consistent APIs and deployment conventions
 
 ---
 
 ### ✅ Features
 
 * ⚡ Written in **Go** for performance
-* 🐳 Distributed via Docker images
+* 🐳 Fully containerized with Docker
 * 🔗 REST + gRPC APIs
-* 🎯 Pluggable into existing systems
+* 🔄 Pub/Sub messaging support
 * 🔐 Secure by default (JWT, OAuth2)
-* 🧠 Designed for reusability, modularity, and extensibility
-* 🛠 Supports `APP_MODE` and `DB_MODE` for flexible deployments
+* 🧠 Configurable via `APP_MODE`, `DB_MODE`, `DB_TABLE_PREFIX`
 
 ---
 
@@ -130,13 +130,20 @@ make build
 docker run -p 8080:8080 maintainerd-auth
 ```
 
-**2. Choose your mode (via env):**
+**2. Set your environment variables:**
 
 ```env
-APP_MODE=micro       # or mono
-DB_MODE=standalone   # or shared (micro only)
-TABLE_PREFIX=auth_
+# Choose between microservice mode or hybrid-monolith mode
+APP_MODE=micro         # or mono
+
+# Database mode (micro only)
+DB_MODE=standalone     # or shared
+
+# Optional table prefix (for shared DB or name collision prevention)
+DB_TABLE_PREFIX=auth_
 ```
+
+These environment variables ensure flexible deployment in any environment — from isolated containers to tightly integrated backends.
 
 ---
 
@@ -144,7 +151,7 @@ TABLE_PREFIX=auth_
 
 > Full setup guides and architecture docs are coming soon on [maintainerd.dev](https://maintainerd.dev)
 
-Until then:
+For now:
 
 * [`auth` Wiki](https://github.com/maintainerd/auth/wiki)
 * [`contract`](https://github.com/maintainerd/contract) for shared protobufs
