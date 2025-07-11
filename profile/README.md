@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="150" height="150" alt="logo" src="https://github.com/user-attachments/assets/3545c8ef-fe74-42c4-890e-0becf4f5ae2f" />
+  <img width="150" height="150" alt="logo" src="https://github.com/user-attachments/assets/3e9eec3d-8312-4f5c-b8cb-14d309a17fda" />
 </p>
 
 <h1 align="center">Maintainerd</h1>
