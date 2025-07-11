@@ -28,30 +28,33 @@ Each module can be:
 
 #### 🧩 `APP_MODE = micro`
 
-* Each service runs as an **independent microservice**
+* Each service runs as an **independent microservice** in its own container
 * Services communicate via **gRPC**, **RabbitMQ**, or **Kafka**
 * Organizations can choose:
 
   * A **separate database per service**, or
   * A **shared database across services**
-* To prevent table name collisions in a shared DB, set the `DB_TABLE_PREFIX` environment variable (e.g., `auth_`, `billing_`)
+* To prevent table name collisions when using the same DB, set `DB_TABLE_PREFIX` (e.g., `auth_`, `billing_`)
 
-> This allows services to run independently while still being flexible enough to integrate into existing systems with shared schemas.
+> This gives full flexibility: isolated services and data, or shared database schemas with prefixed tables.
 
 #### 🧱 `APP_MODE = mono`
 
-* Multiple services run in a **single app/container**
-* Services **share one database**, avoiding duplication of common tables like `users`, `organizations`, etc.
-* Enables direct cross-service queries and tight integration
-* Ideal for hybrid deployments or simpler self-hosted stacks
+* Each service **still runs in its own container** (not a single app/process)
+* All services **share a single database schema**
+* Avoids duplicated data models (e.g., `users`, `organizations`, `permissions`)
+* Enables services to **query shared tables** and avoid inconsistencies
+* Best suited for organizations that prefer strong consistency and centralized data
+
+> Think of this as a **multi-container monolith with a shared database**, not a single-process app.
 
 #### 🛡️ Table Prefixing with `DB_TABLE_PREFIX`
 
-To support shared databases without table conflicts:
+To support shared databases and avoid table conflicts:
 
 * Prefix all tables with a unique string per service
-* e.g., `auth_users`, `core_services`, `billing_invoices`
-* Recommended for both shared microservice deployments and mono mode
+* Example: `auth_users`, `core_orgs`, `billing_invoices`
+* Works for both `micro` and `mono` modes, especially in shared-schema environments
 
 ---
 
@@ -136,7 +139,7 @@ docker run -p 8080:8080 maintainerd-auth
 **2. Set your environment variables:**
 
 ```env
-# Choose between microservice or monolith mode
+# Choose between microservice or monolith (shared database) mode
 APP_MODE=micro         # or mono
 
 # Optional table prefix to avoid name collisions
