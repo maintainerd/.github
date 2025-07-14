@@ -1,8 +1,6 @@
 <p align="center">
-  <img width="150" height="150" alt="logo" src="https://github.com/user-attachments/assets/3e9eec3d-8312-4f5c-b8cb-14d309a17fda" />
+  <img alt="cover" src="https://github.com/user-attachments/assets/f62b501a-bba9-419a-aebe-ad38d7973724" />
 </p>
-
-<h1 align="center">Maintainerd</h1>
 
 **maintainerd** is a collection of production-ready, containerized backend services written in Go — designed to be deployed instantly as standalone applications or as part of a high-performance microservices system.
 
