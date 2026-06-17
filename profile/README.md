@@ -1,186 +1,114 @@
 <p align="center">
-  <img alt="cover" src="https://github.com/user-attachments/assets/86692341-74ff-4163-8b1a-215b81f9a619" />
+  <img width="96" height="96" alt="Maintainerd logo" src="https://maintainerd.github.io/assets/maintainerd-mark.svg" />
 </p>
 
-**maintainerd** is a collection of production-ready, containerized backend services written in Go — designed to be deployed instantly as standalone applications or as part of a high-performance microservices system.
+<h1 align="center">Maintainerd</h1>
 
-Each service is maintained under its own repository and versioned independently, allowing organizations to pick only what they need.
+<p align="center">
+  <strong>Open-source, self-hostable cloud services for app teams.</strong>
+</p>
 
----
+<p align="center">
+  Maintainerd gives developers cloud-style product and platform services they can inspect, run, and own themselves.
+  Use each service standalone, or connect them through <strong>M9d-Core</strong> for a shared control plane.
+</p>
 
-### ⚙️ Overview
-
-The goal of `maintainerd` is to **eliminate redundant backend development** across organizations by offering **ready-to-deploy, configurable services** that handle essential business logic — so teams can focus on their product, not reinventing the backend.
-
-Each module can be:
-
-* Deployed as a **monolith** or **microservice**
-* Configured as a **standalone** service or integrated with others
-* Customized through environment variables and config files
-
----
-
-### 🧱 Architecture Modes
-
-`maintainerd` supports two flexible deployment modes:
-
-#### 🧩 `APP_MODE = micro`
-
-* Each service runs as an **independent microservice** in its own container
-* Services communicate via **gRPC**, **RabbitMQ**, or **Kafka**
-* Organizations can choose:
-
-  * A **separate database per service**, or
-  * A **shared database across services**
-* To prevent table name collisions when using the same DB, set `DB_TABLE_PREFIX` (e.g., `auth_`, `billing_`)
-
-> This gives full flexibility: isolated services and data, or shared database schemas with prefixed tables.
-
-#### 🧱 `APP_MODE = mono`
-
-* Each service **still runs in its own container** (not a single app/process)
-* All services **share a single database schema**
-* Avoids duplicated data models (e.g., `users`, `organizations`, `permissions`)
-* Enables services to **query shared tables** and avoid inconsistencies
-* Best suited for organizations that prefer strong consistency and centralized data
-
-> Think of this as a **multi-container monolith with a shared database**, not a single-process app.
-
-#### 🛡️ Table Prefixing with `DB_TABLE_PREFIX`
-
-To support shared databases and avoid table conflicts:
-
-* Prefix all tables with a unique string per service
-* Example: `auth_users`, `core_orgs`, `billing_invoices`
-* Works for both `micro` and `mono` modes, especially in shared-schema environments
+<p align="center">
+  <a href="https://maintainerd.github.io/">Website</a>
+  |
+  <a href="https://github.com/maintainerd">GitHub</a>
+  |
+  <a href="https://github.com/maintainerd/maintainerd-auth">M9d-Auth</a>
+</p>
 
 ---
 
-### 🧩 Current Modules
+## What Maintainerd Is
 
-#### ✅ [`auth`](https://github.com/maintainerd/auth)
+Maintainerd is an open-source ecosystem of reusable services that teams repeatedly rebuild when creating modern applications. It is closer to a self-hostable cloud product suite than a traditional deployment tool.
 
-Authentication & Authorization Service
-A fully featured authentication system with support for:
+Maintainerd does not try to be AWS, Google Cloud, or a VM provider. You bring your own infrastructure, Docker host, Kubernetes cluster, database engine, or cloud account. Maintainerd provides the product and platform services that can run on top of that environment.
 
-* **OIDC**, **OAuth2**, and custom flows
-* **External Identity Providers** (e.g., Cognito, Auth0)
-* **Built-in User System**
-* **JWT-based auth**, role-based access, and metadata
+Each service is designed to be:
 
-> Can be used independently or integrated into `core` or other services.
+- Standalone first, so teams can adopt only what they need.
+- Self-hostable, so organizations keep control of runtime, data, and deployment.
+- Open source, so developers can inspect, extend, and contribute.
+- Ecosystem-ready, so services can connect through M9d-Core when a shared control plane is useful.
 
-#### 🧠 [`core`](https://github.com/maintainerd/core)
+## How The Ecosystem Fits Together
 
-The **central API** for managing your organization and service configurations.
+M9d-Core is the control plane for the Maintainerd ecosystem. It manages tenants, registered services, health, topology, and high-level operations. It does not directly provision infrastructure. Provisioning and runtime work belong to provider services such as M9d-Docker, M9d-Kubernetes, M9d-Database, and M9d-Domains.
 
-* Stores **organization data**, service settings, enabled/attached modules
-* Acts as the **main API backend** for the frontend web portal
-* Communicates with other services to configure them automatically
-* Optional but **highly recommended** for managing all services in one place
-* Other services can still operate independently without `core`
+The model is simple:
 
-> Think of it as the **system controller and admin panel API**, not an orchestrator.
+- Use one Maintainerd service by itself when you only need that product.
+- Connect multiple services through M9d-Core when you want shared visibility and control.
+- Plug into existing infrastructure instead of replacing your cloud, database, or orchestration platform.
 
----
+## Service Catalog
 
-### 🧰 Microservice Communication
+### Active
 
-* ✅ **gRPC** for internal communication
-* ✅ **RabbitMQ** / **Kafka** for event-driven architecture
-* ✅ Shared protobuf contracts via [`contract`](https://github.com/maintainerd/contract)
-* ✅ Designed for container orchestration platforms (Docker, Kubernetes, etc.)
+| Service | Purpose |
+| --- | --- |
+| [M9d-Auth](https://github.com/maintainerd/maintainerd-auth) | Identity and access management. Includes the auth backend, an admin/developer console, and a public identity interface for login, OAuth2, MFA, consent, account flows, permissions, and policies. |
 
----
+### Planned And Idea-Stage Services
 
-### 📦 Upcoming Modules
+| Area | Services |
+| --- | --- |
+| Control plane | M9d-Core, M9d-Domains, M9d-Docker, M9d-Kubernetes, M9d-Database |
+| Identity and security | M9d-Auth, M9d-Secret, M9d-Gateway |
+| Application products | M9d-Storage, M9d-Drive, M9d-Messaging, M9d-CMS |
+| Operations and business | M9d-Workflow, M9d-Jobs, M9d-Observability, M9d-Billing, M9d-Project, M9d-Support |
 
-More modules are in development, designed to cover frequently reimplemented backend logic:
+These services are not all built yet. The catalog represents the direction of Maintainerd: commonly repeated product and platform capabilities that should be reusable, self-hostable, and able to work together when needed.
 
-* `billing` – Subscriptions, invoices, usage tracking
-* `inventory` – Stock management, suppliers, warehousing
-* `task-manager` – Projects, issues, and collaboration tools
-* `windows-mgmt` – Windows system scripting, RDP sessions, and automation
-* ...more soon
+## Current Focus
 
-Each one will:
+The first developed service is M9d-Auth.
 
-* Follow the same architecture principles
-* Be distributed as a Docker image
-* Support both `micro` and `mono` deployment modes
+M9d-Auth is the IAM foundation for Maintainerd. It owns authentication, authorization, permissions, policies, identity providers, OAuth2/OIDC flows, developer-facing management, and public-facing identity experiences.
 
----
+The Auth product is split into focused parts:
 
-### ✅ Features
+- `maintainerd-auth`: backend service.
+- `maintainerd-auth-console`: admin and developer management console.
+- `maintainerd-auth-identity`: public identity interface for login, OAuth2, account, MFA, and consent flows.
 
-* ⚡ Written in **Go** for high performance
-* 🐳 Distributed via Docker containers
-* 🔗 REST + gRPC APIs
-* 🔄 Pub/Sub with RabbitMQ or Kafka
-* 🔐 Secure defaults (JWT, OAuth2, HTTPS)
-* 🧠 Smart table prefixing via `DB_TABLE_PREFIX`
-* 🧩 Modular and configurable by environment variables
+## Deployment Philosophy
 
----
+Maintainerd services are distributed as containers and are designed to run on infrastructure you control.
 
-### 🚀 Quick Start
-
-**1. Clone a service (e.g., `auth`):**
+Example:
 
 ```bash
-git clone https://github.com/maintainerd/auth.git
-cd auth
-make build
-docker run -p 8080:8080 maintainerd-auth
+docker pull maintainerd/maintainerd-auth
 ```
 
-**2. Set your environment variables:**
+Future services will follow the same approach:
 
-```env
-# Choose between microservice or monolith (shared database) mode
-APP_MODE=micro         # or mono
-
-# Optional table prefix to avoid name collisions
-DB_TABLE_PREFIX=auth_
+```bash
+docker pull maintainerd/maintainerd-core
+docker pull maintainerd/maintainerd-docker
+docker pull maintainerd/maintainerd-kubernetes
 ```
 
----
+## Contributing
 
-### 📚 Documentation
+Maintainerd is early and open to contributors who care about reusable application infrastructure, self-hostable products, identity, control planes, and developer experience.
 
-> Full setup guides and architecture docs are coming soon on [maintainerd.dev](https://maintainerd.dev)
+Useful ways to contribute:
 
-In the meantime:
+- Improve M9d-Auth and its console.
+- Help define clear service boundaries.
+- Build SDKs, examples, and deployment templates.
+- Review security, identity, and authorization behavior.
+- Discuss planned services and real-world use cases.
 
-* [`auth` Wiki](https://github.com/maintainerd/auth/wiki)
-* [`contract`](https://github.com/maintainerd/contract) for shared protobufs
+## Links
 
----
-
-### 🤝 Contributing
-
-Want to contribute a new module or improve an existing one?
-
-1. Fork a service
-2. Create a feature branch
-3. Submit a PR
-
-We welcome:
-
-* New reusable modules
-* Performance and security improvements
-* Better developer tooling and DX enhancements
-
----
-
-### 📜 License
-
-MIT License — free to use in commercial and personal projects.
-
----
-
-### 🌍 Stay Updated
-
-* Follow the [maintainerd GitHub org](https://github.com/maintainerd)
-* Star your favorite modules
-* Join the discussions and contribute ideas
+- Website: https://maintainerd.github.io/
+- Organization: https://github.com/maintainerd
+- Active service: https://github.com/maintainerd/maintainerd-auth
