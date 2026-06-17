@@ -48,11 +48,11 @@ The model is simple:
 
 ## Service Catalog
 
-### Active
+### In Development
 
-| Service | Purpose |
-| --- | --- |
-| [M9d-Auth](https://github.com/maintainerd/maintainerd-auth) | Identity and access management. Includes the auth backend, an admin/developer console, and a public identity interface for login, OAuth2, MFA, consent, account flows, permissions, and policies. |
+| Service | Status | Purpose |
+| --- | --- | --- |
+| [M9d-Auth](https://github.com/maintainerd/maintainerd-auth) | Ongoing development. No public release yet. Estimated first release: `v0.1.0` around July 14, 2026. | Identity and access management. Includes the auth backend, an admin/developer console, and a public identity interface for login, OAuth2, MFA, consent, account flows, permissions, and policies. |
 
 ### Planned And Idea-Stage Services
 
@@ -67,9 +67,9 @@ These services are not all built yet. The catalog represents the direction of Ma
 
 ## Current Focus
 
-The first developed service is M9d-Auth.
+The first service under active development is M9d-Auth.
 
-M9d-Auth is the IAM foundation for Maintainerd. It owns authentication, authorization, permissions, policies, identity providers, OAuth2/OIDC flows, developer-facing management, and public-facing identity experiences.
+M9d-Auth is the IAM foundation for Maintainerd. It owns authentication, authorization, permissions, policies, identity providers, OAuth2/OIDC flows, developer-facing management, and public-facing identity experiences. It has no public release yet; the estimated first release is `v0.1.0` around July 14, 2026.
 
 The Auth product is split into focused parts:
 
@@ -111,4 +111,4 @@ Useful ways to contribute:
 
 - Website: https://maintainerd.github.io/
 - Organization: https://github.com/maintainerd
-- Active service: https://github.com/maintainerd/maintainerd-auth
+- Current service in development: https://github.com/maintainerd/maintainerd-auth
